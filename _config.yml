@@ -1,30 +1,77 @@
-name: Kubernetes
+name: Kubernetes 中文文档
+title: Kubernetes 中文文档
+description: Kubernetes 官方文档的中文翻译版本
+url: "https://kubernetes-docs-cn.github.io"
+baseurl: "/"
+
+# Build settings
 markdown: kramdown
 kramdown:
   input: GFM
   html_to_native: true
   hard_wrap: false
   syntax_highlighter: rouge
-baseurl: /
-incremental: true
+  syntax_highlighter_opts:
+    block:
+      line_numbers: true
 
+# Jekyll 4+ settings
+highlighter: rouge
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Incremental builds
+incremental: true
 safe: false
 lsi: false
+
+# Collections and defaults
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:name/
 
 defaults:
   -
     scope:
       path: "docs"
     values:
-      version: "v1.1"
+      version: "v1.29"  # 更新到最新版本
       layout: docwithnav
       showedit: true
-      githubbranch: "release-1.1"
-      docsbranch: "release-1.1"
+      githubbranch: "main"
+      docsbranch: "main"
+      lang: "zh-CN"
+  -
+    scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "docwithnav"
+
 permalink: pretty
 
+# SEO and metadata
+lang: zh-CN
+timezone: Asia/Shanghai
+
+# Exclude from processing
 exclude:
-  - githubpagesites-0405247c814f.json.enc
-  - githubpagesites-0405247c814f.json
   - Gemfile
   - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - .github/
+  - .gitignore
+  - README.md
+  - package.json
+  - package-lock.json
+
+# Include files
+include:
+  - _pages

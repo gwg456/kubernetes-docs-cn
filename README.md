@@ -1,170 +1,180 @@
-# Contributing to Kubernetes Chinese Documentation
+# Kubernetes 中文文档 📚
 
-Thanks everyone for contributing your time on translating Kubernetes documentation into Chinese.
+> Kubernetes 官方文档的中文翻译项目
 
-If you're not familiar with processes working with git, please follow the steps below:
+[![Jekyll Build](https://github.com/kubernetes/kubernetes-docs-cn/actions/workflows/jekyll.yml/badge.svg)](https://github.com/kubernetes/kubernetes-docs-cn/actions/workflows/jekyll.yml)
+[![License](https://img.shields.io/github/license/kubernetes/kubernetes-docs-cn)](LICENSE)
 
- 1. Have git installed in your machine.
- 2. OPTIONAL: Clone already translated file to your local machine.
+## 📖 项目介绍
 
-        git clone https://git.gitbook.com/linfan1/kubernetes-chinese-docs 
+本项目致力于将 Kubernetes 官方文档翻译成中文，为中文用户提供高质量的 Kubernetes 学习资源。
 
- 3. Use the `Fork` button in the upper-right side of the screen to fork this repo to your own github account.
- 4. Clone your repo to your local machine.
- 5. git clone https://github.com/YOURACCOUNT/kubernetes-docs-cn.git
- 6. Enter the cloned folder and set your emailaddress and username of your github account, so when you commit a change, git will know who you are.
+- **目标版本**: Kubernetes v1.29+
+- **网站地址**: [https://kubernetes-docs-cn.github.io](https://kubernetes-docs-cn.github.io)
+- **翻译进度**: 正在进行中...
 
-        git config set user.email YOUREMAILADDRESS
-        git config set user.name YOURGITHUBACCOUNT
+## 🚀 快速开始
 
- 7. Set this repo as an upstream.
+### 本地开发环境设置
 
-        git remote add upstream https://github.com/kubernetes/kubernetes-docs-cn.git
+1. **安装 Ruby 和 Bundler**
+   ```bash
+   # macOS (使用 Homebrew)
+   brew install ruby
+   
+   # Ubuntu/Debian
+   sudo apt-get install ruby-full build-essential zlib1g-dev
+   
+   # 安装 Bundler
+   gem install bundler
+   ```
 
- 8. Check out to branch `release-1.1-cn`.
+2. **克隆项目**
+   ```bash
+   git clone https://github.com/kubernetes/kubernetes-docs-cn.git
+   cd kubernetes-docs-cn
+   ```
 
-        git checkout release-1.1-cn
+3. **安装依赖**
+   ```bash
+   bundle install
+   ```
 
- 9. Snychronize your repo with upstream.
+4. **本地运行**
+   ```bash
+   bundle exec jekyll serve
+   ```
+   
+   访问 [http://localhost:4000](http://localhost:4000) 查看网站
 
-        git fetch upstream
-        git merge upstream/release-1.1-cn
+### Docker 方式运行
 
- 10. Create a new working branch.
+```bash
+# 构建容器
+docker build -t k8s-docs-cn .
 
-        git checkout -b NEWWORKINGBRANCH
+# 运行容器
+docker run -p 4000:4000 -v $(pwd):/srv/jekyll k8s-docs-cn
+```
 
- 11. Do you translation work, the documents are located in `/docs` folder. If you have done step 2, find your translated file and overwrite the coresponding file. If you're working on an untranslated file, just edit it.
- 12. Commit your changes. Input your commit title and message as the prompt says. Then press `Ctrl+X` and then `Shift+Y`.
+## 🤝 如何贡献
 
-        git add .
-        git commit
+我们欢迎任何形式的贡献！无论是翻译新文档、改进现有翻译，还是修复错误。
 
- 13. Push your commit to your own repo and create a branch coresponding to your working branch.
+### 贡献流程
 
-        git push origin NEWWORKINGBRANCH:NEWWORKINGBRANCH
+1. **选择要翻译的文档**
+   - 查看 [Issues](https://github.com/kubernetes/kubernetes-docs-cn/issues) 中的翻译任务
+   - 创建新的 Issue 声明你要翻译的文档
 
- 14. Now go to your repo page `https://github.com/YOURACCOUNT/kubernetes-docs-cn`, use the `New Pull Request` button to create a new PR. **DO** choose `release-1.1-cn` branch in the left and `NEWWORKINGBRANCH` in the right. 
- 15. Want to send another PR? Repeat step 8 to 14.
+2. **Fork 并创建分支**
+   ```bash
+   # Fork 项目到你的 GitHub 账号
+   # 然后克隆你的 Fork
+   git clone https://github.com/YOUR_USERNAME/kubernetes-docs-cn.git
+   cd kubernetes-docs-cn
+   
+   # 创建新分支
+   git checkout -b translate-document-name
+   ```
 
-## How to squash your commits
+3. **进行翻译**
+   - 参考 [翻译规范](#翻译规范)
+   - 保持原有的 Markdown 格式和结构
+   - 翻译时保留英文术语的中文对照
 
-1. Make sure your code is up-to-date: git pull
-2. Use `rebase` command to squash recent commits:
+4. **提交和推送**
+   ```bash
+   git add .
+   git commit -m "翻译: 文档标题"
+   git push origin translate-document-name
+   ```
 
-        git rebase -i release-1.1-cn
+5. **创建 Pull Request**
+   - 在 GitHub 上创建 Pull Request
+   - 在 PR 描述中关联相关 Issue
+   - 等待审核和合并
 
-    Following content will be shown:
+### 翻译规范
 
-    	pick fb554f5 This is commit 1
-    	pick 2bd1903 This is commit 2
-    	pick d987ebf This is commit 3
-    
-    	# Rebase 9cbc329..d987ebf onto 9cbc329
-    	#
-    	# Commands:
-    	#  p, pick = use commit
-    	#  r, reword = use commit, but edit the commit message
-    	#  e, edit = use commit, but stop for amending
-    	#  s, squash = use commit, but meld into previous commit
-    	#  f, fixup = like "squash", but discard this commit's log message
-    	#  x, exec = run command (the rest of the line) using shell
-    	#
-    	# If you remove a line here THAT COMMIT WILL BE LOST.
-    	# However, if you remove everything, the rebase will be aborted.
-    	#
-	
-    The first three lines represent the most recent three commits, mark the commit you want to keep as *pick* or *p*, and mark the following as *squash* or *fixup*, refer to the instruction for the distinction between the marks.
-    After your modification is done, the result will be like:
+#### 📋 术语对照表
 
-    	pick fb554f5 This is commit 1
-    	squash 2bd1903 This is commit 2
-    	squash d987ebf This is commit 3
+| 英文 | 中文 | 说明 |
+|------|------|------|
+| Pod | Pod | 保留英文 |
+| Service | 服务 | 翻译 |
+| Deployment | 部署 | 翻译 |
+| Namespace | 命名空间 | 翻译 |
+| Node | 节点 | 翻译 |
+| Cluster | 集群 | 翻译 |
+| Container | 容器 | 翻译 |
+| Volume | 数据卷 | 翻译 |
 
-    Press `Ctrl+X` to exit, and then `Shift+Y` to confirm.
+#### ✅ 翻译原则
 
-    >**What if I want to squash commits more than three?**
+1. **准确性**: 确保翻译准确传达原文含义
+2. **一致性**: 使用统一的术语翻译
+3. **可读性**: 符合中文表达习惯
+4. **格式保持**: 保留原有 Markdown 格式和代码块
 
-    	git rebase -i HEAD~N
+#### 📝 文件规范
 
-    N is the number of commits you want to squash.
+- 文件名保持英文不变
+- Front Matter 中的 `title` 可以翻译为中文
+- 代码示例中的注释可以翻译
+- 保留所有链接和图片引用
 
-3. After squashing done, don't forget to push it to the remote repo:
+### 示例格式
 
-    	git push -f
+```yaml
+---
+title: "Pod 概述"  # 中文标题
+---
 
-## NOTES
-- The steps above are just very basic practices of using git. There're more problems you may meet. So if you're new to git, learn it ASAP.
-- **Start an issue before you create a PR**, so other people would know which file you're working on. Issue can be named as `Translating docs/admin/accessing-the-api.md`.
-- Bound the issue and PR together using `#ISSUEID` in your PR.
-- Comment under your PR use `@SOMEONE` to notify someone to review your PR.
-- Send only one translated file in one single PR. So reviewers can make a quick review and merge the PR early.
-- The PR I created to modify the README file can be considered as an example.
-- For more information, continue reading this file.
+# Pod 概述
 
-# Contributing to the Kubernetes Documentation and Website
+Pod 是 Kubernetes 中最小的可部署单元...
 
-Welcome! We are very pleased you want to contribute to Kubernetes.
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod  # Pod 名称
+spec:
+  containers:
+  - name: app
+    image: nginx
+```
 
-You can click the "Fork" button in the upper-right area of the screen to create a copy of our site on your GitHub account called a "fork." Make any changes you want in your fork, and when you are ready to send those changes to us, go to the index page for your fork and click "New Pull Request" to let us know about it.
+## 📊 项目状态
 
-If you want to see your changes staged without having to install anything locally,
-change your fork of our repo to be named:
+- ✅ 基础架构现代化
+- 🔄 核心概念文档翻译中
+- ⏳ 用户指南翻译待完成
+- ⏳ 管理员指南翻译待开始
 
-    YOUR_GITHUB_USERNAME.github.io
+## 🛠 技术栈
 
-Then, visit: [http://YOUR_GITHUB_USERNAME.github.io](http://YOUR_GITHUB_USERNAME.github.io)
+- **Jekyll 4.3+**: 静态网站生成器
+- **GitHub Pages**: 网站托管
+- **GitHub Actions**: 自动化构建和部署
+- **Kramdown**: Markdown 处理器
+- **Rouge**: 语法高亮
 
-You should see a special-to-you version of the site. 
+## 📞 联系我们
 
-## Running the site locally
+- 🐛 [报告问题](https://github.com/kubernetes/kubernetes-docs-cn/issues)
+- 💡 [功能建议](https://github.com/kubernetes/kubernetes-docs-cn/discussions)
+- 📧 邮件: docs-zh@kubernetes.io
 
-If you have files to upload, or just want to work offline, run the below commands to setup
-your environment for running GitHub pages locally. Then, any edits you make will be viewable
-on a lightweight webserver that runs on your local machine.
+## 📄 许可证
 
-First install rvm
+本项目遵循与 Kubernetes 相同的 [Apache 2.0 许可证](LICENSE)。
 
-	\curl -sSL https://get.rvm.io | bash -s stable
+## 🙏 致谢
 
-Then load it into your environment
+感谢所有为 Kubernetes 中文文档做出贡献的志愿者们！
 
-	source /Users/(USERNAME)/.rvm/scripts/rvm (or whatever is prompted by the installer)
+---
 
-Then install Ruby 2.2 or higher
-
-	rvm install ruby-2.2.4
-	rvm use ruby-2.2.4 --default
-	
-Verify that this new version is running (optional)
-
-	which ruby
-	ruby -v
-	
-Install the GitHub Pages package, which includes Jekyll
-
-	gem install github-pages
-
-Clone our site
-
-	git clone https://github.com/kubernetes/kubernetes.github.io.git
-
-Then, to see it run locally:
-
-	cd kubernetes.github.io
-	jekyll serve
-
-Your copy of the site will then be viewable at: [http://0.0.0.0:4000](http://0.0.0.0:4000)
-(or wherever Ruby tells you).
-
-If you're a bit rusty with git/GitHub, you might wanna read
-[this](http://readwrite.com/2013/10/02/github-for-beginners-part-2) for a refresher.
-
-The above instructions work on Mac and Linux.
-[These instructions ](https://martinbuberl.com/blog/setup-jekyll-on-windows-and-host-it-on-github-pages/)
-might help for Windows users. 
-
-## Thank you!
-
-Kubernetes thrives on community participation and we really appreciate your
-contributions to our site and our documentation!
+**让我们一起让 Kubernetes 对中文用户更友好！** 🎉
