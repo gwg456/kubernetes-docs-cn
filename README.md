@@ -1,195 +1,289 @@
-# Contributing to Kubernetes Chinese Documentation
+# Flask OIDC API
+
+一个集成OpenID Connect (OIDC) 认证的Flask REST API应用。
+
+## 功能特性
+
+- ✅ **OIDC认证集成** - 支持标准的OpenID Connect认证流程
+- ✅ **角色基础访问控制** - 基于用户角色的API访问控制
+- ✅ **RESTful API设计** - 标准的REST API端点
+- ✅ **多种认证装饰器** - 灵活的认证和授权装饰器
+- ✅ **完整的错误处理** - 统一的错误响应格式
+- ✅ **健康检查端点** - 用于监控和负载均衡
+- ✅ **Bearer Token支持** - 支持JWT Bearer token认证
+- ✅ **配置管理** - 支持多环境配置
+
+## 项目结构
+
+```
+flask-oidc-api/
+├── app.py                          # 主应用文件
+├── auth.py                         # 认证相关工具函数
+├── config.py                       # 配置管理
+├── requirements.txt                # Python依赖
+├── client_secrets.json             # OIDC客户端配置（通用）
+├── client_secrets_keycloak.json    # Keycloak专用配置示例
+├── .env.example                    # 环境变量示例
+├── test_api.py                     # API测试脚本
+└── README.md                       # 项目说明
+```
+
+## 快速开始
+
+### 1. 安装依赖
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. 配置OIDC提供商
+
+复制并修改客户端配置文件：
+
+```bash
+cp client_secrets.json.example client_secrets.json
+```
+
+编辑 `client_secrets.json`，填入你的OIDC提供商信息：
+
+```json
+{
+  "web": {
+    "client_id": "your-client-id",
+    "client_secret": "your-client-secret",
+    "auth_uri": "https://your-oidc-provider.com/auth",
+    "token_uri": "https://your-oidc-provider.com/token",
+    "userinfo_uri": "https://your-oidc-provider.com/userinfo",
+    "issuer": "https://your-oidc-provider.com",
+    "redirect_uris": [
+      "http://localhost:5000/oidc_callback"
+    ]
+  }
+}
+```
+
+### 3. 设置环境变量
+
+```bash
+cp .env.example .env
+```
+
+编辑 `.env` 文件：
+
+```env
+SECRET_KEY=your-super-secret-key-change-in-production
+FLASK_DEBUG=true
+OIDC_OPENID_REALM=flask-oidc-api
+```
+
+### 4. 启动应用
+
+```bash
+python app.py
+```
+
+应用将在 `http://localhost:5000` 启动。
+
+## API端点
+
+### 认证相关
+
+| 端点 | 方法 | 描述 | 认证要求 |
+|------|------|------|----------|
+| `/auth/login` | GET | 用户登录 | 无（会重定向到OIDC提供商） |
+| `/auth/logout` | GET | 用户登出 | 无 |
+| `/auth/profile` | GET | 获取用户信息 | 需要认证 |
+
+### API端点
+
+| 端点 | 方法 | 描述 | 认证要求 |
+|------|------|------|----------|
+| `/` | GET | API信息 | 无 |
+| `/health` | GET | 健康检查 | 无 |
+| `/api/public` | GET | 公开端点 | 无 |
+| `/api/protected` | GET | 受保护端点 | 需要认证 |
+| `/api/admin` | GET | 管理员端点 | 需要admin角色 |
+| `/api/users` | GET | 获取用户列表 | 需要认证 |
+| `/api/users` | POST | 创建用户 | 需要认证 |
+| `/api/users/{id}` | GET | 获取用户详情 | 需要认证 |
+| `/api/users/{id}` | PUT | 更新用户 | 需要认证 |
+| `/api/users/{id}` | DELETE | 删除用户 | 需要admin角色 |
+
+## 认证装饰器
+
+### @require_auth
+要求用户已通过OIDC认证：
+
+```python
+from auth import require_auth
+
+@app.route('/api/protected')
+@require_auth
+def protected_endpoint():
+    return jsonify({'message': 'This is protected'})
+```
+
+### @require_role(role)
+要求用户具有特定角色：
+
+```python
+from auth import require_role
+
+@app.route('/api/admin')
+@require_role('admin')
+def admin_endpoint():
+    return jsonify({'message': 'Admin only'})
+```
+
+### @require_any_role(*roles)
+要求用户具有任意一个指定角色：
+
+```python
+from auth import require_any_role
+
+@app.route('/api/moderator')
+@require_any_role('admin', 'moderator')
+def moderator_endpoint():
+    return jsonify({'message': 'Admin or moderator'})
+```
+
+### @optional_auth
+可选认证，如果用户已认证则提供用户信息：
+
+```python
+from auth import optional_auth
+from flask import g
+
+@app.route('/api/optional')
+@optional_auth
+def optional_endpoint():
+    if g.user_authenticated:
+        return jsonify({'user': g.user_info})
+    else:
+        return jsonify({'message': 'Anonymous access'})
+```
+
+## 测试
+
+运行API测试：
+
+```bash
+# 基础测试
+python test_api.py
+
+# 使用Bearer token测试
+python test_api.py "your-jwt-token"
+```
+
+## 配置说明
+
+### 环境变量
+
+| 变量名 | 描述 | 默认值 |
+|--------|------|--------|
+| `SECRET_KEY` | Flask密钥 | `dev-secret-key-change-in-production` |
+| `FLASK_DEBUG` | 调试模式 | `false` |
+| `HOST` | 服务器地址 | `0.0.0.0` |
+| `PORT` | 服务器端口 | `5000` |
+| `OIDC_OPENID_REALM` | OIDC域 | `flask-oidc-api` |
+| `LOG_LEVEL` | 日志级别 | `INFO` |
 
-Thanks everyone for contributing your time on translating Kubernetes documentation into Chinese.
+### OIDC配置
 
-If you're not familiar with processes working with git, please follow the steps below:
+在 `client_secrets.json` 中配置：
 
- 1. Have git installed in your machine.
- 2. OPTIONAL: Clone already translated file to your local machine.
+- `client_id`: OIDC客户端ID
+- `client_secret`: OIDC客户端密钥
+- `auth_uri`: 授权端点URL
+- `token_uri`: Token端点URL
+- `userinfo_uri`: 用户信息端点URL
+- `issuer`: OIDC发行者URL
+- `redirect_uris`: 重定向URI列表
 
-        git clone https://git.gitbook.com/linfan1/kubernetes-chinese-docs
+## 支持的OIDC提供商
 
- 3. Use the `Fork` button in the upper-right side of the screen to fork this repo to your own github account.
- 4. Clone your repo to your local machine.
- 5. git clone https://github.com/YOURACCOUNT/kubernetes-docs-cn.git
- 6. Enter the cloned folder and set your emailaddress and username of your github account, so when you commit a change, git will know who you are.
+本应用支持任何标准的OpenID Connect提供商，包括：
 
-        git config set user.email YOUREMAILADDRESS
-        git config set user.name YOURGITHUBACCOUNT
+- **Keycloak**
+- **Auth0**
+- **Okta**
+- **Azure AD**
+- **Google**
+- **AWS Cognito**
 
- 7. Set this repo as an upstream.
+### Keycloak配置示例
 
-        git remote add upstream https://github.com/kubernetes/kubernetes-docs-cn.git
+```json
+{
+  "web": {
+    "client_id": "flask-oidc-api",
+    "client_secret": "your-keycloak-client-secret",
+    "auth_uri": "https://keycloak.example.com/auth/realms/myrealm/protocol/openid-connect/auth",
+    "token_uri": "https://keycloak.example.com/auth/realms/myrealm/protocol/openid-connect/token",
+    "userinfo_uri": "https://keycloak.example.com/auth/realms/myrealm/protocol/openid-connect/userinfo",
+    "issuer": "https://keycloak.example.com/auth/realms/myrealm",
+    "redirect_uris": [
+      "http://localhost:5000/oidc_callback"
+    ]
+  }
+}
+```
 
- 8. Check out to branch `release-1.1-cn`.
+## 部署
 
-        git checkout release-1.1-cn
+### Docker部署
 
- 9. Snychronize your repo with upstream.
+创建 `Dockerfile`：
 
-        git fetch upstream
-        git merge upstream/release-1.1-cn
+```dockerfile
+FROM python:3.9-slim
 
- 10. Create a new working branch.
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-        git checkout -b NEWWORKINGBRANCH
+COPY . .
+EXPOSE 5000
 
- 11. Do you translation work, the documents are located in `/docs` folder. If you have done step 2, find your translated file and overwrite the coresponding file. If you're working on an untranslated file, just edit it.
- 12. Commit your changes. Input your commit title and message as the prompt says. Then press `Ctrl+X` and then `Shift+Y`.
+CMD ["python", "app.py"]
+```
 
-        git add .
-        git commit
+构建和运行：
 
- 13. Push your commit to your own repo and create a branch coresponding to your working branch.
+```bash
+docker build -t flask-oidc-api .
+docker run -p 5000:5000 -e SECRET_KEY=your-secret-key flask-oidc-api
+```
 
-        git push origin NEWWORKINGBRANCH:NEWWORKINGBRANCH
+### 生产环境注意事项
 
- 14. Now go to your repo page `https://github.com/YOURACCOUNT/kubernetes-docs-cn`, use the `New Pull Request` button to create a new PR. **DO** choose `release-1.1-cn` branch in the left and `NEWWORKINGBRANCH` in the right.
- 15. Want to send another PR? Repeat step 8 to 14.
+1. **设置强密钥**：确保 `SECRET_KEY` 是随机生成的强密钥
+2. **启用HTTPS**：生产环境必须使用HTTPS
+3. **配置CORS**：如果需要跨域访问，正确配置CORS
+4. **日志配置**：配置适当的日志级别和输出
+5. **监控**：使用 `/health` 端点进行健康检查
 
-# NOTES
-- The steps above are just very basic practices of using git. There're more problems you may meet. So if you're new to git, learn it ASAP.
-- **Start an issue before you create a PR**, so other people would know which file you're working on. Issue can be named as `Translating docs/admin/accessing-the-api.md`.
-- Bound the issue and PR together using `#ISSUEID` in your PR.
-- Comment under your PR use `@SOMEONE` to notify someone to review your PR.
-- Send only one translated file in one single PR. So reviewers can make a quick review and merge the PR early.
-- The PR I created to modify the README file can be considered as a example.
-- For more information, continue reading this file.
+## 故障排除
 
-## Instructions for Contributing to the Docs/Website
+### 常见问题
 
-Welcome! We are very pleased you want to contribute to the documentation and/or website for Kubernetes.
+1. **OIDC认证失败**
+   - 检查 `client_secrets.json` 配置
+   - 确认重定向URI正确配置
+   - 检查OIDC提供商的网络连接
 
-You can click the "Fork" button in the upper-right area of the screen to create a copy of our site on your GitHub account called a "fork." Make any changes you want in your fork, and when you are ready to send those changes to us, go to the index page for your fork and click "New Pull Request" to let us know about it.
+2. **角色授权失败**
+   - 确认OIDC提供商正确返回角色信息
+   - 检查角色字段名称（`roles`, `realm_access.roles` 等）
 
-If you want to see your changes staged without having to install anything locally, remove the CNAME file in this directory and
-change the name of the fork to be:
+3. **Session问题**
+   - 确保设置了正确的 `SECRET_KEY`
+   - 检查Cookie设置
 
-    YOUR_GITHUB_USERNAME.github.io
+## 贡献
 
-Then, visit: [http://YOUR_GITHUB_USERNAME.github.io](http://YOUR_GITHUB_USERNAME.github.io)
+欢迎提交Issue和Pull Request！
 
-You should see a special-to-you version of the site.
+## 许可证
 
-## Editing/staging the site locally
-
-If you have files to upload, or just want to work offline, run the below commands to setup
-your environment for running GitHub pages locally. Then, any edits you make will be viewable
-on a lightweight webserver that runs on your local machine.
-
-First install rvm
-
-	curl -sSL https://get.rvm.io | bash -s stable
-
-Then load it into your environment
-
-	source ${HOME}/.rvm/scripts/rvm (or whatever is prompted by the installer)
-
-Then install Ruby 2.2 or higher
-
-	rvm install ruby-2.2.4
-	rvm use ruby-2.2.4 --default
-
-Verify that this new version is running (optional)
-
-	which ruby
-	ruby -v
-
-Install the GitHub Pages package, which includes Jekyll
-
-	gem install github-pages
-
-Clone our site
-
-	git clone https://github.com/kubernetes/kubernetes.github.io.git
-
-Make any changes you want. Then, to see your changes locally:
-
-	cd kubernetes.github.io
-	jekyll serve
-
-Your copy of the site will then be viewable at: [http://localhost:4000](http://localhost:4000)
-(or wherever Ruby tells you).
-
-If you're a bit rusty with git/GitHub, you might wanna read
-[this](http://readwrite.com/2013/10/02/github-for-beginners-part-2) for a refresher.
-
-The above instructions work on Mac and Linux.
-[These instructions ](https://martinbuberl.com/blog/setup-jekyll-on-windows-and-host-it-on-github-pages/)
-might help for Windows users.
-
-## Common Tasks
-
-### Edit Page Titles or Change the Left Navigation
-
-Edit the yaml files in `/_data/` for the Guides, Reference, Samples, or Support areas.
-
-You may have to exit and `jekyll clean` before restarting the `jekyll serve` to
-get changes to files in `/_data/` to show up.
-
-### Add Images
-
-Put the new image in `/images/docs/` if it's for the documentation, and just `/images/` if it's for the website.
-
-**For diagrams, we greatly prefer SVG files!**
-
-### Include code from another file
-
-To include a file that is hosted on this GitHub repo, insert this code:
-
-<pre>&#123;% include code.html language="&lt;LEXERVALUE&gt;" file="&lt;RELATIVEPATH&gt;" ghlink="&lt;PATHFROMROOT&gt;" %&#125;</pre>
-
-* `LEXERVALUE`: The language in which the file was written; must be [a value supported by Rouge](https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers).
-* `RELATIVEPATH`: The path to the file you're including, relative to the current file.
-* `PATHFROMROOT`: The path to the file relative to root, e.g. `/docs/admin/foo.yaml`
-
-To include a file that is hosted in the external, main Kubernetes repo, make sure it's added to [/update-imported-docs.sh](https://github.com/kubernetes/kubernetes.github.io/blob/master/update-imported-docs.sh), and run it so that the file gets downloaded, then enter:
-
-<pre>&#123;% include code.html language="&lt;LEXERVALUE&gt;" file="&lt;RELATIVEPATH&gt;" k8slink="&lt;PATHFROMK8SROOT&gt;" %&#125;</pre>
-
-* `PATHFROMK8SROOT`: The path to the file relative to the root of [the Kubernetes repo](https://github.com/kubernetes/kubernetes/tree/release-1.2), e.g. `/examples/rbd/foo.yaml`
-
-## Using tabs for multi-language examples
-
-By specifying some inline CSV in a varable called `tabspec`, you can include a file
-called `tabs.html` that generates tabs showing code examples in multiple langauges.
-
-<pre>&#123;% capture tabspec %&#125;servicesample
-JSON,json,service-sample.json,/docs/user-guide/services/service-sample.json
-YAML,yaml,service-sample.yaml,/docs/user-guide/services/service-sample.yaml&#123;% endcapture %&#125;
-&#123;% include tabs.html %&#125;</pre>
-
-In English, this would read: "Create a set of tabs with the alias `servicesample`,
-and have tabs visually labeled "JSON" and "YAML" that use `json` and `yaml` Rouge syntax highlighting, which display the contents of
-`service-sample.{extension}` on the page, and link to the file in GitHub at (full path)."
-
-Example file: [Pods: Multi-Container](/docs/user-guide/pods/multi-container/).
-
-## Use a global variable
-
-The `/_config.yml` file defines some useful variables you can use when editing docs.
-
-* `page.githubbranch`: The name of the GitHub branch on the Kubernetes repo that is associated with this branch of the docs. e.g. `release-1.2`
-* `page.version` The version of Kubernetes associated with this branch of the docs. e.g. `v1.2`
-* `page.docsbranch` The name of the GitHub branch on the Docs/Website repo that you are currently using. e.g. `release-1.1` or `master`
-
-This keeps the docs you're editing aligned with the Kubernetes version you're talking about. For example, if you define a link like so, you'll never have to worry about it going stale in future doc branches:
-
-<pre>View the README [here](http://releases.k8s.io/&#123;&#123;page.githubbranch&#125;&#125;/cluster/addons/README.md).</pre>
-
-That, of course, will send users to:
-
-[http://releases.k8s.io/release-1.2/cluster/addons/README.md](http://releases.k8s.io/release-1.2/cluster/addons/README.md)
-
-(Or whatever Kubernetes release that docs branch is associated with.)
-
-## Branch structure
-
-The current version of the website is served out of the `master` branch.
-
-All versions of the site that relate to past and future versions will be named after their Kubernetes release number. For example, [the old branch for the 1.1 docs is called `release-1.1`](https://github.com/kubernetes/kubernetes.github.io/tree/release-1.1).
-
-## Thank you!
-
-Kubernetes thrives on community participation and we really appreciate your
-contributions to our site and our documentation!
+MIT License
