@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片时间线</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .timeline-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #3498db;
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            text-align: right;
+            padding-right: 60%;
+        }
+        
+        .timeline-item:nth-child(even) {
+            text-align: left;
+            padding-left: 60%;
+        }
+        
+        .timeline-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            right: -20px;
+            border-left-color: white;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content::before {
+            left: -20px;
+            border-right-color: white;
+        }
+        
+        .timeline-date {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .timeline-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .timeline-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .image-item {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .image-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+        
+        .image-caption {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+
+        
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            width: 16px;
+            height: 16px;
+            background: #3498db;
+            border: 4px solid white;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="timeline-container">
+        <h1>项目图片时间线</h1>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024年1月</div>
+                    <div class="timeline-title">项目启动</div>
+                    <div class="timeline-description">
+                        项目正式启动，团队开始进行需求分析和技术选型。
+                    </div>
+                    <div class="image-gallery">
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #e74c3c; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                项目启动会议
+                            </div>
+                            <div class="image-caption">团队启动会议照片</div>
+                        </div>
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #9b59b6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                需求文档
+                            </div>
+                            <div class="image-caption">初版需求文档</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024年3月</div>
+                    <div class="timeline-title">原型设计</div>
+                    <div class="timeline-description">
+                        完成产品原型设计，包括用户界面设计和交互流程规划。
+                    </div>
+                    <div class="image-gallery">
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #2ecc71; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                UI 设计稿
+                            </div>
+                            <div class="image-caption">界面设计原型</div>
+                        </div>
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #f39c12; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                交互流程图
+                            </div>
+                            <div class="image-caption">用户交互流程</div>
+                        </div>
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #1abc9c; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                技术架构图
+                            </div>
+                            <div class="image-caption">系统架构设计</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024年6月</div>
+                    <div class="timeline-title">开发阶段</div>
+                    <div class="timeline-description">
+                        进入核心开发阶段，后端API和前端界面同步开发。
+                    </div>
+                    <div class="image-gallery">
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #34495e; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                代码截图
+                            </div>
+                            <div class="image-caption">核心功能代码</div>
+                        </div>
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #e67e22; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                数据库设计
+                            </div>
+                            <div class="image-caption">数据库结构图</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024年9月</div>
+                    <div class="timeline-title">测试验收</div>
+                    <div class="timeline-description">
+                        完成功能测试和性能测试，修复发现的问题，准备上线部署。
+                    </div>
+                    <div class="image-gallery">
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #27ae60; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                测试报告
+                            </div>
+                            <div class="image-caption">测试结果报告</div>
+                        </div>
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #8e44ad; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                性能监控
+                            </div>
+                            <div class="image-caption">性能测试图表</div>
+                        </div>
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #d35400; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                部署截图
+                            </div>
+                            <div class="image-caption">生产环境部署</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2024年12月</div>
+                    <div class="timeline-title">项目上线</div>
+                    <div class="timeline-description">
+                        项目成功上线，开始为用户提供服务，获得了良好的用户反馈。
+                    </div>
+                    <div class="image-gallery">
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #c0392b; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                用户界面
+                            </div>
+                            <div class="image-caption">最终产品界面</div>
+                        </div>
+                        <div class="image-item">
+                            <div style="width: 100%; height: 200px; background: #16a085; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                用户反馈
+                            </div>
+                            <div class="image-caption">用户评价统计</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
