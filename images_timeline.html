@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片时间线</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            position: relative;
+        }
+        
+
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #007bff, #28a745);
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 50px;
+            width: 100%;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: 0;
+            margin-right: 55%;
+            text-align: right;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 55%;
+            margin-right: 0;
+            text-align: left;
+        }
+        
+        .timeline-content {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e9ecef;
+            position: relative;
+        }
+        
+        .timeline-date {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            transform: translateX(-50%);
+            background: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 10;
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .image-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .image-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .image-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 15px 10px 10px;
+            font-size: 12px;
+        }
+        
+        .timeline-description {
+            margin-top: 15px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item:nth-child(odd) .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                margin-left: 60px;
+                margin-right: 0;
+                text-align: left;
+            }
+            
+            .timeline-date {
+                left: 20px;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div class="container">
+        <h1>图片时间线展示</h1>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">2024-01-01</div>
+                <div class="timeline-content">
+                    <h3>新年第一天</h3>
+                    <div class="image-gallery">
+                        <div class="image-item">
+                            <img src="https://via.placeholder.com/300x200/ff6b6b/ffffff?text=新年烟花" alt="新年烟花">
+                            <div class="image-caption">新年烟花绽放</div>
+                        </div>
+                        <div class="image-item">
+                            <img src="https://via.placeholder.com/300x200/4ecdc4/ffffff?text=家庭聚餐" alt="家庭聚餐">
+                            <div class="image-caption">温馨家庭聚餐</div>
+                        </div>
+                    </div>
+                    <div class="timeline-description">
+                        新年第一天，和家人一起观看烟花，享受温馨的家庭时光。
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-date">2024-01-05</div>
+                <div class="timeline-content">
+                    <h3>冬日雪景</h3>
+                    <div class="image-gallery">
+                        <div class="image-item">
+                            <img src="https://via.placeholder.com/300x200/74b9ff/ffffff?text=雪山风景" alt="雪山风景">
+                            <div class="image-caption">壮丽雪山风景</div>
+                        </div>
+                        <div class="image-item">
+                            <img src="https://via.placeholder.com/300x200/a29bfe/ffffff?text=雪中漫步" alt="雪中漫步">
+                            <div class="image-caption">雪中浪漫漫步</div>
+                        </div>
+                        <div class="image-item">
+                            <img src="https://via.placeholder.com/300x200/fd79a8/ffffff?text=雪人" alt="堆雪人">
+                            <div class="image-caption">可爱的雪人</div>
+                        </div>
+                    </div>
+                    <div class="timeline-description">
+                        难得的大雪天，记录下这美丽的冬日雪景和快乐时光。
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-date">2024-01-10</div>
+                <div class="timeline-content">
+                    <h3>美食探索</h3>
+                    <div class="image-gallery">
+                        <div class="image-item">
+                            <img src="https://via.placeholder.com/300x200/fdcb6e/ffffff?text=特色料理" alt="特色料理">
+                            <div class="image-caption">地道特色料理</div>
+                        </div>
+                        <div class="image-item">
+                            <img src="https://via.placeholder.com/300x200/e17055/ffffff?text=甜品" alt="精美甜品">
+                            <div class="image-caption">精美手工甜品</div>
+                        </div>
+                    </div>
+                    <div class="timeline-description">
+                        探索当地美食，品尝各种特色料理和精美甜品。
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-date">2024-01-15</div>
+                <div class="timeline-content">
+                    <h3>城市夜景</h3>
+                    <div class="image-gallery">
+                        <div class="image-item">
+                            <img src="https://via.placeholder.com/300x200/2d3436/ffffff?text=夜景1" alt="城市夜景">
+                            <div class="image-caption">璀璨城市夜景</div>
+                        </div>
+                        <div class="image-item">
+                            <img src="https://via.placeholder.com/300x200/636e72/ffffff?text=夜景2" alt="霓虹灯">
+                            <div class="image-caption">绚丽霓虹灯光</div>
+                        </div>
+                        <div class="image-item">
+                            <img src="https://via.placeholder.com/300x200/00b894/ffffff?text=夜景3" alt="江边夜景">
+                            <div class="image-caption">宁静江边夜景</div>
+                        </div>
+                    </div>
+                    <div class="timeline-description">
+                        夜晚的城市别有一番风味，灯火阑珊处最是迷人。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+</body>
+</html>
